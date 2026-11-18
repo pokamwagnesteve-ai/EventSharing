@@ -1,0 +1,30 @@
+@model EventSharing.Models.Event
+@{ ViewData["Title"] = Model.Name; }
+<div class="d-flex justify-content-between align-items-start">
+    <div>
+        <span class="badge text-bg-secondary">@Model.Category.Name</span>
+        <h1>@Model.Name</h1>
+        <p class="text-muted">Du @Model.StartDate.ToString("dd/MM/yyyy HH:mm") au @Model.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p>@Model.Description</p>
+        <p>Créé par <strong>@(Model.Creator.Name ?? Model.Creator.UserName)</strong> · @Model.Participants.Count participant(s)</p>
+    </div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var isParticipant = Model.Participants.Any(user => user.Id == currentUserId);
+        if (isParticipant)
+        {
+            <form asp-action="Leave" asp-route-id="@Model.Id" method="post"><button class="btn btn-outline-danger">Ne plus participer</button></form>
+        }
+        else
+        {
+            <form asp-action="Join" asp-route-id="@Model.Id" method="post"><button class="btn btn-success">Participer</button></form>
+        }
+    }
+</div>
+@if (User.Identity?.IsAuthenticated == true && Model.CreatorId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+{
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Supprimer</a>
+}
+<a asp-action="Index" class="btn btn-link">Retour aux événements</a>

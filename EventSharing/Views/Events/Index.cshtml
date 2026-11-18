@@ -1,0 +1,42 @@
+@model IEnumerable<EventSharing.Models.Event>
+@using EventSharing.Models
+@{
+    ViewData["Title"] = "Événements";
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? Enumerable.Empty<Category>();
+}
+<h1>Événements</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form asp-action="Index" method="get" class="d-flex gap-2">
+        <select name="categoryId" class="form-select" asp-items="@(new SelectList(categories, "Id", "Name", ViewBag.SelectedCategoryId))">
+            <option value="">Toutes les catégories</option>
+        </select>
+        <button class="btn btn-outline-primary" type="submit">Filtrer</button>
+    </form>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Create" class="btn btn-primary">Créer un événement</a>
+    }
+</div>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucun événement à venir.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <article class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <span class="badge text-bg-secondary">@item.Category.Name</span>
+                        <h2 class="h5 mt-2">@item.Name</h2>
+                        <p class="text-muted">@item.StartDate.ToString("dd/MM/yyyy HH:mm") – @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p>@(item.Description.Length > 140 ? item.Description[..140] + "…" : item.Description)</p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Voir le détail</a>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}

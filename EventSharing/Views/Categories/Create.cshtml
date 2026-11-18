@@ -1,0 +1,11 @@
+@model EventSharing.Models.Category
+@{ ViewData["Title"] = "Créer une catégorie"; }
+<h1>Créer une catégorie</h1>
+<form asp-action="Create" method="post">
+    <partial name="_Form" model="Model" />
+    <button class="btn btn-primary">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

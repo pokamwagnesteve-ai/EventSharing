@@ -1,0 +1,2 @@
+@model EventSharing.Models.Category
+@{ ViewData["Title"] = Model.Name; }<h1>@Model.Name</h1><p>@Model.Description</p><h2 class="h5">Événements associés</h2><ul>@foreach (var item in Model.Events) { <li><a asp-controller="Events" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></li> }</ul><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a> <a asp-action="Index" class="btn btn-secondary">Retour</a>
